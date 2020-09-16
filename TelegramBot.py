@@ -84,9 +84,9 @@ def randYou(text):
 		if text[0] == '#':
 			return "Ты на "+ str(random.randint(0, 100)) + "% " + text[1:] + "!";
 		else:
-			return "Я полный дебил";
+			return "Я на " + str(random.randint(0, 100)) + "% " + text + "!";
 	else:
-		return "Я на " + str(random.randint(0, 100)) + "% " + text + "!";
+		return "Я полный дебил";	
 
 # Обработка входящих упоминаний 
 @bot.inline_handler(func=lambda query: True)
