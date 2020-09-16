@@ -78,8 +78,13 @@ def getMems():
 
 # Насколько % ты
 def randYou(text):
-	if text == "numeber":
+	if text == "number":
 		return "Выпало: " + str(random.randint(0, 100));
+	elif len(text) > 0:
+		if text[0] == '#':
+			return "Ты на "+ str(random.randint(0, 100)) + "% " + text[1:] + "!";
+		else:
+			return "Я полный дебил";
 	else:
 		return "Я на " + str(random.randint(0, 100)) + "% " + text + "!";
 
@@ -96,7 +101,7 @@ def query_text(query):
 			message_text=randYou(query.query)
 		), 
 		reply_markup=keyboard,
-		thumb_url="https://media.istockphoto.com/vectors/home-on-computer-screen-to-show-trading-house-details-concept-48x48-vector-id1253081260?b=1&k=6&m=1253081260&s=170x170&h=352PaPe_Nzw_ea756nmGm513b-WUMWTzrCzI7EuVO3E=",
+		thumb_url="https://raw.githubusercontent.com/Angoliuk/Bot/master/dice.png",
 		thumb_width=48, thumb_height=48
 	);
 
@@ -105,7 +110,9 @@ def query_text(query):
 		id='2', title="Анекдот",
 		description = "Вишлет в текущий чат случайный анекдот",
 		input_message_content= telebot.types.InputTextMessageContent(message_text=getJokes()),
-		reply_markup=keyboard
+		reply_markup=keyboard,
+		thumb_url="https://raw.githubusercontent.com/Angoliuk/Bot/master/jokes.png",
+		thumb_width=48, thumb_height=48
 	);
 
 	# Функция мема
