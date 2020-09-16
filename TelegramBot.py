@@ -35,7 +35,7 @@ with open("jokes.json", "r") as read_file:
 # При первом запуске бота и при /start или же /help
 @bot.message_handler(commands=['start', 'help'])
 def start_message(message):
-	bot.send_message(message.chat.id, "Здраствуй... \n Я P1kchaBot, и вот что я умею: \n\t1) При упоминании меня (@P1kchaBot) вы можите вислать в вибраний чат:\n\t\ta) Случайный Анектод\n\t\tб) Случайный мем\n\t\tв) Случайний % того, кто ты таков (вписать в аргумент)\n\t2) ");
+	bot.send_message(message.chat.id, "Здраствуй... \n Я P1kchaBot, и вот что я умею: \n\t1) При упоминании меня (@P1kchaBot) вы можите вислать в вибраний чат:\n\t\ta) Случайный Анектод\n\t\tб) Случайный мем\n\t\tв) Случайний % того, кто ты таков (вписать в аргумент)\n\t2)Точное время (/time)");
 	
 # Сохранение массива мемов и анектодотв
 @bot.message_handler(commands=['save'])
@@ -50,7 +50,7 @@ def save(message):
 def send_text(message):
 	# Викидиваем "Поделится"
 	if message.chat.id != JOKES_DATABASE_ID and message.chat.id != MEMS_DATABASE_ID:
-		bot.send_message(message.chat.id, "TelegramBot", reply_markup=keyboard); 
+		bot.send_message(message.chat.id, "P1kchaBot", reply_markup=keyboard); 
 	elif message.chat.id == JOKES_DATABASE_ID:
 		jokes.append(message.text);
 
@@ -59,6 +59,13 @@ def send_text(message):
 def send_text(mesage):
 	if mesage.chat.id == MEMS_DATABASE_ID:
 		mems.append(mesage.photo[+0].file_id);
+
+# Получения точного времени
+@bot.message_handler(commands=['time'])
+def time(message):
+	bot.send_message(message.chat.id, 
+					 "Год:" + str(datetime.datetime.year) + "\nМесяц:" + str(datetime.datetime.month) + "\nДень:" + str(datetime.datetime.day) + "\nЧас:" + str(datetime.datetime.hour) + "\nМинута:" + str(datetime.datetime.minute) + "\nСекунда:" + str(datetime.datetime.second),
+					 reply_markup=keyboard); 
 
 # Вибор шутки
 def getJokes():
