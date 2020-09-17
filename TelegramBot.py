@@ -1,10 +1,14 @@
 import telebot
+import requests
 import random
 import datetime
 import json
 
 # Получаем текущее время
 now = datetime.datetime.now()
+
+# Погода
+appid = "756f978d959c807230d24030c94d02b7";
 
 # Устанавлеваем сид для генерации псевдослучайних чисел
 random.seed(now.microsecond);
@@ -14,12 +18,17 @@ JOKES_DATABASE_ID = -420133829;
 MEMS_DATABASE_ID = -405564100;
 
 # Получамем доступ к боту
-bot = telebot.TeleBot('1123086042:AAFcpIUSEKfn0TDz5KljfNdidwK90X4_2To');
+bot = telebot.TeleBot('1369641243:AAGJgvVhL-tY4gvdYG0SpUJKZwYnqL7q0t8'); #1123086042:AAFcpIUSEKfn0TDz5KljfNdidwK90X4_2To
 
 # Создаем инлайн-клавиатуру "Поделится"
 keyboard = telebot.types.InlineKeyboardMarkup();
 button = telebot.types.InlineKeyboardButton(text="Поделится", switch_inline_query="");
 keyboard.add(button);
+
+# Создаем инлайн-клавиатуру "Локация"
+locationKeyboard = telebot.types.ReplyKeyboardMarkup();
+locationButton = telebot.types.KeyboardButton(text="Отправить местоположение", request_location=True);
+locationKeyboard.add(locationButton);
 
 jokes = []; # Анекдоти
 mems = []; # Меми
@@ -31,6 +40,7 @@ with open("mems.json", "r") as read_file:
 # Читаем меми
 with open("jokes.json", "r") as read_file:
     jokes = json.load(read_file)
+
 
 # При первом запуске бота и при /start или же /help
 @bot.message_handler(commands=['start', 'help'])
@@ -45,6 +55,51 @@ def save(message):
 	with open("mems.json", "w") as write_file:
 			json.dump(mems, write_file)
 
+# Получения точного времени
+@bot.message_handler(commands=['time'])
+def getTime(message):
+	now = datetime.datetime.now()
+	bot.send_message(message.chat.id, 
+					 "Год:" + str(now.year) + "\nМесяц:" + str(now.month) + "\nДень:" + str(now.day) + "\nЧас:" + str(now.hour) + "\nМинута:" + str(now.minute) + "\nСекунда:" + str(now.second),
+					 reply_markup=keyboard); 
+
+
+# Получения локации
+@bot.message_handler(commands=['weather'])
+def location(message):
+    bot.send_message(message.chat.id, "Что бы узнать погоду, мне нужно ваше местоположение", reply_markup=locationKeyboard);
+
+# Получения точного времени
+@bot.message_handler(content_types=['location'])
+def getWeather(message):
+	city_id = 0;
+	city_name = "";
+
+	try:
+		res = requests.get("http://api.openweathermap.org/data/2.5/find",
+					 params={'lat': message.location.latitude, 'lon': message.location.longitude, 'type': 'like', 'units': 'metric', 'lang': 'ru', 'APPID': appid});
+		data = res.json();
+		city_id = data['list'][0]['id'];
+		city_name = str(data['list'][0]['name']);
+	except Exception as e:
+		bot.send_message(message.chat.id, "Ошибка при поиске информации о городе");
+		pass
+
+	try:
+		res = requests.get("http://api.openweathermap.org/data/2.5/weather",
+                 params={'id': city_id, 'units': 'metric', 'lang': 'ru', 'APPID': appid})
+		data = res.json()
+		bot.send_message(message.chat.id, 
+				   "Погода в " + city_name + ":" +
+				   "\n Погода: " + str(data['weather'][0]['description']) + 
+				   "\n Средняя Температура: " + str(data['main']['temp']) +
+				   "\n Температура в тени: " + str(data['main']['temp_min']) +
+				   "\n Температура на солнце: " + str(data['main']['temp_max'])
+				   );
+	except Exception as e:
+		bot.send_message(message.chat.id, "Ошибка при поиске информации о погоде");
+		pass
+ 
 # Обработка входящих сообщений
 @bot.message_handler(content_types=['text'])
 def send_text(message):
@@ -59,13 +114,6 @@ def send_text(message):
 def send_text(mesage):
 	if mesage.chat.id == MEMS_DATABASE_ID:
 		mems.append(mesage.photo[+0].file_id);
-
-# Получения точного времени
-@bot.message_handler(commands=['time'])
-def time(message):
-	bot.send_message(message.chat.id, 
-					 "Год:" + str(datetime.datetime.year) + "\nМесяц:" + str(datetime.datetime.month) + "\nДень:" + str(datetime.datetime.day) + "\nЧас:" + str(datetime.datetime.hour) + "\nМинута:" + str(datetime.datetime.minute) + "\nСекунда:" + str(datetime.datetime.second),
-					 reply_markup=keyboard); 
 
 # Вибор шутки
 def getJokes():
@@ -98,7 +146,6 @@ def randYou(text):
 # Обработка входящих упоминаний 
 @bot.inline_handler(func=lambda query: True)
 def query_text(query):
-
 	# Функция бросания костей
 	dice = telebot.types.InlineQueryResultArticle(
 		id='1', title="На сколько % ты",
