@@ -18,7 +18,7 @@ JOKES_DATABASE_ID = -420133829;
 MEMS_DATABASE_ID = -405564100;
 
 # Получамем доступ к боту
-bot = telebot.TeleBot('1369641243:AAGJgvVhL-tY4gvdYG0SpUJKZwYnqL7q0t8'); #1123086042:AAFcpIUSEKfn0TDz5KljfNdidwK90X4_2To
+bot = telebot.TeleBot('1123086042:AAFcpIUSEKfn0TDz5KljfNdidwK90X4_2To');
 
 # Создаем инлайн-клавиатуру "Поделится"
 keyboard = telebot.types.InlineKeyboardMarkup();
