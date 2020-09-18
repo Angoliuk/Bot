@@ -18,7 +18,7 @@ JOKES_DATABASE_ID = -420133829;
 MEMS_DATABASE_ID = -405564100;
 
 # Получамем доступ к боту
-bot = telebot.TeleBot('1123086042:AAFcpIUSEKfn0TDz5KljfNdidwK90X4_2To');
+bot = telebot.TeleBot('1123086042:AAFcpIUSEKfn0TDz5KljfNdidwK90X4_2To'); #1369641243:AAGJgvVhL-tY4gvdYG0SpUJKZwYnqL7q0t8
 
 # Создаем инлайн-клавиатуру "Поделится"
 keyboard = telebot.types.InlineKeyboardMarkup();
@@ -63,11 +63,15 @@ def getTime(message):
 					 "Год:" + str(now.year) + "\nМесяц:" + str(now.month) + "\nДень:" + str(now.day) + "\nЧас:" + str(now.hour) + "\nМинута:" + str(now.minute) + "\nСекунда:" + str(now.second),
 					 reply_markup=keyboard); 
 
-
 # Получения локации
 @bot.message_handler(commands=['weather'])
 def location(message):
     bot.send_message(message.chat.id, "Что бы узнать погоду, мне нужно ваше местоположение", reply_markup=locationKeyboard);
+
+@bot.callback_query_handler(func=lambda call: True)
+def startGame(call):
+	bot.answer_callback_query(call.id, url="https://angoliuk.github.io/Game-for-Bot/Index.html");
+
 
 # Получения точного времени
 @bot.message_handler(content_types=['location'])
