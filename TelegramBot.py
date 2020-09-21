@@ -18,7 +18,7 @@ JOKES_DATABASE_ID = -420133829;
 MEMS_DATABASE_ID = -405564100;
 
 # Получамем доступ к боту
-bot = telebot.TeleBot('1123086042:AAFcpIUSEKfn0TDz5KljfNdidwK90X4_2To'); #1369641243:AAGJgvVhL-tY4gvdYG0SpUJKZwYnqL7q0t8
+bot = telebot.TeleBot('1123086042:AAFcpIUSEKfn0TDz5KljfNdidwK90X4_2To'); #
 
 # Создаем инлайн-клавиатуру "Поделится"
 keyboard = telebot.types.InlineKeyboardMarkup();
@@ -45,7 +45,13 @@ with open("jokes.json", "r") as read_file:
 # При первом запуске бота и при /start или же /help
 @bot.message_handler(commands=['start', 'help'])
 def start_message(message):
-	bot.send_message(message.chat.id, "Здраствуй... \n Я P1kchaBot, и вот что я умею: \n\t1) При упоминании меня (@P1kchaBot) вы можите вислать в вибраний чат:\n\t\ta) Случайный Анектод\n\t\tб) Случайный мем\n\t\tв) Случайний % того, кто ты таков (вписать в аргумент)\n\t2)Точное время (/time)");
+	bot.send_message(message.chat.id, "Здраствуй... \n Я P1kchaBot, и вот что я умею: \n\t" +
+				  "1) При упоминании меня (@P1kchaBot) вы можите вислать в вибраний чат:\n\t\t" +
+				  "a) Случайный Анектод\n\t\tб) Случайный мем\n\t\tв) Случайний % того, кто ты таков (вписать в аргумент)\n\t" + 
+				  "2) Точное время (/time)\n\t" +
+				  "3) Погоду в твоей местности (/weather)\n\t" +
+				  "4) Поиграть в игру Royal Isekai (/game)"
+				  );
 	
 # Сохранение массива мемов и анектодотв
 @bot.message_handler(commands=['save'])
@@ -68,6 +74,12 @@ def getTime(message):
 def location(message):
     bot.send_message(message.chat.id, "Что бы узнать погоду, мне нужно ваше местоположение", reply_markup=locationKeyboard);
 
+# Силка на игру
+@bot.message_handler(commands=['game'])
+def getGame(message):
+	bot.send_message(message.chat.id, "http://t.me/TestP1kchaBot?game=RoyalIsekai");
+
+# Запуск игри
 @bot.callback_query_handler(func=lambda call: True)
 def startGame(call):
 	bot.answer_callback_query(call.id, url="https://angoliuk.github.io/Game-for-Bot/Index.html");
@@ -103,7 +115,7 @@ def getWeather(message):
 	except Exception as e:
 		bot.send_message(message.chat.id, "Ошибка при поиске информации о погоде");
 		pass
- 
+
 # Обработка входящих сообщений
 @bot.message_handler(content_types=['text'])
 def send_text(message):
